@@ -11,44 +11,42 @@
 #
 # Configure Using Gemfile
 # gem "pg"
-#
- default: &default
+
+default: &default
   adapter: postgresql
-   encoding: unicode
-   pool: 5
-#   username: neondb_owner
-#   password: npg_W6BDvTi4IVQC
-#   host: ep-red-leaf-a8x55tje-pooler.eastus2.azure.neon.tech
-#   port: 5432
-#   database: rails_eunny_db
-#   sslmode: require
+  encoding: unicode
+  pool: 5
+  # Use environment variables for password and host if managed by Render
+  username: piazza-web
+  password: <%= ENV["PIAZZA_WEB_DATABASE_PASSWORD"] %>
+  host: <%= ENV["DATABASE_HOST"] %>
+  port: 5432
+  sslmode: require
 
-# development:
-#   <<: *default
-#   database: rails_eunny_db
+development:
+  <<: *default
+  database: rails_eunny_db
 
+test:
+  <<: *default
+  database: <%= ENV["DATABASE_NAME"] %>_test
 
-# test:
-#   <<: *default
-#   database: <%= ENV["DATABASE_NAME"] %>_test
-
-
-  production:
+production:
   primary: &primary_production
     <<: *default
     database: rails_eunny_db
-    username: piazza-web
-    password: <%= ENV["PIAZZA_WEB_DATABASE_PASSWORD"] %>
+
   cache:
     <<: *primary_production
     database: rails_eunny_web_production_cache
     migrations_paths: db/cache_migrate
+
   queue:
     <<: *primary_production
     database: rails_eunny_web_production_queue
     migrations_paths: db/queue_migrate
+
   cable:
     <<: *primary_production
     database: rails_eunny_web_production_cable
     migrations_paths: db/cable_migrate
-  
