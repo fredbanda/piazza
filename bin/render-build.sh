@@ -3,7 +3,16 @@
 
 set -o errexit 
 
+# Install dependencies
 bundle install
+
+# Install and build JavaScript
+yarn install
+yarn build
+
+# Asset compilation
 bundle exec rake assets:precompile
 bundle exec rake assets:clean
-bundle rake db:migrate
+
+# Database migrations
+bundle exec rake db:migrate
